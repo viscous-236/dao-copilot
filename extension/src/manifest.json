@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "DAO Governance Co-Pilot",
+  "version": "0.1.0",
+  "description": "AI + X402 powered governance assistant for DAOs.",
+  "permissions": ["scripting", "tabs", "storage"],
+  "action": {
+    "default_popup": "index.html"
+  },
+  "background": {
+    "service_worker": "background/listener.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://vote.uniswapfoundation.org/*", "https://snapshot.org/*"],
+      "js": ["content-script/injectPanel.js"],
+      "css": ["content-script/style.css"]
+    }
+  ]
+}
