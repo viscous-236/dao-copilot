@@ -13,6 +13,8 @@
     "@types/chrome": "^0.0.262",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
+    "css-loader": "^6.10.0",
+    "style-loader": "^3.3.4",
     "ts-loader": "^9.5.1",
     "typescript": "^5.4.0",
     "webpack": "^5.91.0",

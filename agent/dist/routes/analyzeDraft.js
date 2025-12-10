@@ -11,7 +11,6 @@ exports.analyzeDraftRouter.post("/", async (req, res) => {
             error: "Missing required fields: daoId, draftText"
         });
     }
-    // For draft analysis, we don't have a proposal ID yet
     const result = await (0, proposalAnalysis_1.callLLMForProposalAnalysis)(daoId, "draft", draftText);
     res.json({ analysis: result });
 });
