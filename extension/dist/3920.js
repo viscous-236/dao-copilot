@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdao_governance_extension=self.webpackChunkdao_governance_extension||[]).push([[3920],{33920:(e,n,o)=>{o.d(n,{config:()=>s});var a=o(49734),c=o(62808);const s=(0,a.Y8)({appName:"DAO Governance Co-Pilot",projectId:"dao-copilot-x402",chains:[c.Z],ssr:!1})}}]);

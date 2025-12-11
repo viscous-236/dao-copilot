@@ -12,6 +12,8 @@ analyzeDraftRouter.post("/", async (req, res) => {
     });
   }
 
+  console.log(`[analyzeDraft] Analyzing draft for DAO ${daoId}`);
+
   const result = await callLLMForProposalAnalysis(daoId, "draft", draftText);
 
   res.json({ analysis: result });

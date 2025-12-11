@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdao_governance_extension=self.webpackChunkdao_governance_extension||[]).push([[6680],{26680:(e,n,a)=>{a.r(n),a.d(n,{default:()=>s.n});var s=a(4006)}}]);

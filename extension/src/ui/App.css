@@ -292,6 +292,21 @@
   font-size: 12px;
 }
 
+.dao-copilot-images-info {
+  margin: 12px 0;
+  padding: 8px 12px;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-left: 3px solid #0ea5e9;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.dao-copilot-images-info small {
+  color: #0369a1;
+  font-size: 12px;
+  font-weight: 500;
+}
+
 /* Scrollbar styling */
 .dao-copilot-content::-webkit-scrollbar {
   width: 6px;

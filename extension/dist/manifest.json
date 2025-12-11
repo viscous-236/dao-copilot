@@ -20,7 +20,17 @@
     {
       "matches": ["https://vote.uniswapfoundation.org/*", "https://snapshot.org/*"],
       "js": ["content-script/injectPanel.js"],
-      "run_at": "document_idle"
+      "run_at": "document_start"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "injected/pageScript.js", 
+        "injected/walletBridge.js",
+        "content-script/injectPanel.css"
+      ],
+      "matches": ["https://vote.uniswapfoundation.org/*", "https://snapshot.org/*"]
     }
   ]
 }

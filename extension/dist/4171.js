@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdao_governance_extension=self.webpackChunkdao_governance_extension||[]).push([[4171],{54171:(e,n,a)=>{a.d(n,{baseSepolia:()=>s.Z});var s=a(62808)}}]);

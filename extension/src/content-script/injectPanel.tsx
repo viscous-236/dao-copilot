@@ -2,6 +2,25 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "../ui/App";
 
+console.log('[DAO Co-Pilot] Content script loaded');
+
+// Inject wallet bridge script into page context
+function injectWalletBridge() {
+  const script = document.createElement('script');
+  script.src = chrome.runtime.getURL('injected/walletBridge.js');
+  script.onload = () => {
+    console.log('[DAO Co-Pilot] Wallet bridge injected');
+    script.remove();
+  };
+  (document.head || document.documentElement).appendChild(script);
+}
+
+// Inject the bridge as early as possible
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', injectWalletBridge);
+} else {
+  injectWalletBridge();
+}
 
 // Check if we're on a Uniswap governance page
 const isUniswapGovernancePage = () => {
@@ -47,7 +66,11 @@ const getDaoId = (): string => {
 
 // Inject the AI panel into the page
 function injectPanel() {
+  console.log('[DAO Co-Pilot] injectPanel() called');
+  console.log('[DAO Co-Pilot] Current URL:', window.location.href);
+  
   const proposalId = getProposalId();
+  console.log('[DAO Co-Pilot] Proposal ID:', proposalId);
   
   // Only inject if we're on a proposal page
   if (!proposalId) {
@@ -62,6 +85,23 @@ function injectPanel() {
   }
 
   console.log(`[DAO Co-Pilot] Injecting AI panel for proposal: ${proposalId}`);
+
+  // Wait for document.head to be available
+  if (!document.head) {
+    console.log('[DAO Co-Pilot] document.head not ready, waiting...');
+    setTimeout(() => injectPanel(), 100);
+    return;
+  }
+
+  // Inject CSS (only once)
+  if (!document.getElementById('dao-copilot-css')) {
+    const cssLink = document.createElement("link");
+    cssLink.id = 'dao-copilot-css';
+    cssLink.rel = "stylesheet";
+    cssLink.href = chrome.runtime.getURL("content-script/injectPanel.css");
+    document.head.appendChild(cssLink);
+    console.log('[DAO Co-Pilot] CSS injected');
+  }
 
   // Create the container div
   const panelContainer = document.createElement("div");
@@ -92,6 +132,11 @@ function injectPanel() {
     targetElement = document.body;
   }
 
+  if (!targetElement) {
+    console.error("[DAO Co-Pilot] No target element available, aborting");
+    return;
+  }
+
   // Insert panel at the beginning of the target element
   targetElement.insertBefore(panelContainer, targetElement.firstChild);
 
@@ -108,8 +153,17 @@ function injectPanel() {
   console.log("[DAO Co-Pilot] AI panel injected successfully!");
 }
 
-// Try to inject immediately
-injectPanel();
+// Wait for DOM to be ready before injecting
+if (document.readyState === 'loading') {
+  console.log('[DAO Co-Pilot] DOM is loading, waiting for DOMContentLoaded...');
+  document.addEventListener('DOMContentLoaded', () => {
+    console.log('[DAO Co-Pilot] DOMContentLoaded fired, injecting panel...');
+    setTimeout(injectPanel, 500);
+  });
+} else {
+  console.log('[DAO Co-Pilot] DOM already loaded, injecting panel...');
+  setTimeout(injectPanel, 500);
+}
 
 // Also watch for navigation changes (for SPAs)
 let lastUrl = location.href;

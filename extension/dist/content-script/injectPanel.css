@@ -1,0 +1,329 @@
+/* DAO Governance Co-Pilot - Extension Styles */
+
+.dao-copilot-panel {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 400px;
+  max-width: 90vw;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  z-index: 999999;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.dao-copilot-header {
+  padding: 16px 20px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
+}
+
+.dao-copilot-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: white;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.dao-copilot-icon {
+  font-size: 24px;
+}
+
+.dao-copilot-text {
+  flex: 1;
+}
+
+.dao-copilot-badge {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dao-copilot-toggle {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  font-size: 14px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.dao-copilot-toggle:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.dao-copilot-content {
+  background: white;
+  padding: 20px;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.dao-copilot-description {
+  color: #6b7280;
+  font-size: 14px;
+  margin: 0 0 16px 0;
+  line-height: 1.5;
+}
+
+.dao-copilot-analyze-btn {
+  width: 100%;
+  padding: 14px 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.dao-copilot-analyze-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.dao-copilot-analyze-btn:active {
+  transform: translateY(0);
+}
+
+.dao-copilot-analyze-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.dao-copilot-loading {
+  text-align: center;
+  padding: 30px 20px;
+}
+
+.dao-copilot-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e5e7eb;
+  border-top-color: #667eea;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 16px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.dao-copilot-loading p {
+  color: #6b7280;
+  font-size: 14px;
+  margin: 0;
+}
+
+.dao-copilot-error {
+  background: #fee;
+  border: 1px solid #fcc;
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+}
+
+.dao-copilot-error p {
+  color: #c00;
+  margin: 0 0 12px 0;
+  font-size: 14px;
+}
+
+.dao-copilot-retry-btn {
+  padding: 8px 16px;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.dao-copilot-retry-btn:hover {
+  background: #dc2626;
+}
+
+.dao-copilot-analysis {
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.dao-copilot-recommendation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: #f9fafb;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.dao-copilot-recommendation-badge {
+  padding: 8px 20px;
+  color: white;
+  font-weight: 700;
+  font-size: 16px;
+  border-radius: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dao-copilot-confidence {
+  font-size: 14px;
+  font-weight: 600;
+  color: #4b5563;
+}
+
+.dao-copilot-section {
+  margin-bottom: 20px;
+}
+
+.dao-copilot-section h4 {
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dao-copilot-section p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #4b5563;
+}
+
+.dao-copilot-section ul {
+  margin: 0;
+  padding-left: 20px;
+  list-style: disc;
+}
+
+.dao-copilot-section li {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #4b5563;
+  margin-bottom: 6px;
+}
+
+.dao-copilot-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.dao-copilot-vote-btn {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.dao-copilot-vote-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.dao-copilot-vote-yes {
+  background: #22c55e;
+  color: white;
+}
+
+.dao-copilot-vote-no {
+  background: #ef4444;
+  color: white;
+}
+
+.dao-copilot-reanalyze-btn {
+  padding: 10px 16px;
+  background: #f3f4f6;
+  color: #4b5563;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.dao-copilot-reanalyze-btn:hover {
+  background: #e5e7eb;
+}
+
+.dao-copilot-footer {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+  text-align: center;
+}
+
+.dao-copilot-footer small {
+  color: #9ca3af;
+  font-size: 12px;
+}
+
+.dao-copilot-images-info {
+  margin: 12px 0;
+  padding: 8px 12px;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-left: 3px solid #0ea5e9;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.dao-copilot-images-info small {
+  color: #0369a1;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Scrollbar styling */
+.dao-copilot-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dao-copilot-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.dao-copilot-content::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.dao-copilot-content::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+
+/*# sourceMappingURL=injectPanel.css.map*/

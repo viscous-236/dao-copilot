@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdao_governance_extension=self.webpackChunkdao_governance_extension||[]).push([[8916],{78916:(e,n,a)=>{a.d(n,{WagmiProvider:()=>o.x});var o=a(32675)}}]);
