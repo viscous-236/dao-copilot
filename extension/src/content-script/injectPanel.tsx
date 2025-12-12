@@ -72,15 +72,16 @@ function injectPanel() {
   const proposalId = getProposalId();
   console.log('[DAO Co-Pilot] Proposal ID:', proposalId);
   
+  // Remove existing panel if it exists
+  const existingPanel = document.getElementById("dao-ai-panel");
+  if (existingPanel) {
+    console.log("[DAO Co-Pilot] Removing existing panel");
+    existingPanel.remove();
+  }
+  
   // Only inject if we're on a proposal page
   if (!proposalId) {
-    console.log("[DAO Co-Pilot] Not on a proposal page, skipping injection");
-    return;
-  }
-
-  // Check if panel already exists
-  if (document.getElementById("dao-ai-panel")) {
-    console.log("[DAO Co-Pilot] Panel already injected");
+    console.log("[DAO Co-Pilot] Not on a proposal page, panel removed");
     return;
   }
 
