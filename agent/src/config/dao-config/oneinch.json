@@ -1,0 +1,46 @@
+{
+  "daoId": "1inch",
+  "name": "1inch Network",
+  "governanceToken": "1INCH",
+  "votingPlatform": "snapshot",
+  "snapshotSpace": "1inch.eth",
+  "quorumThreshold": "10000000",
+  "votingPeriod": "7 days",
+  "proposalThreshold": "100000",
+  "treasuryAddress": "0x7951c7ef839e26F63DA87a42C9a87986507f1c07",
+  "description": "1inch Network is a DeFi aggregator providing the best swap rates across multiple DEXs",
+  "governanceRules": {
+    "phases": [
+      {
+        "name": "Discussion Phase",
+        "duration": "3-7 days",
+        "platform": "Forum",
+        "description": "Community discussion and feedback gathering"
+      },
+      {
+        "name": "Snapshot Vote",
+        "duration": "7 days",
+        "quorum": "10M 1INCH",
+        "description": "Off-chain voting on Snapshot"
+      },
+      {
+        "name": "Implementation",
+        "duration": "Variable",
+        "description": "Executed by 1inch Foundation or community multisig"
+      }
+    ],
+    "requiredFields": [
+      "Summary",
+      "Motivation",
+      "Specification",
+      "Budget/Cost (if applicable)",
+      "Timeline",
+      "Success Metrics"
+    ],
+    "securityRequirements": {
+      "treasuryRequests": "Multisig with 6+ month track record",
+      "smartContracts": "Professional audit required for >$100K impact",
+      "criticalChanges": "Timelock and emergency pause required"
+    }
+  }
+}
