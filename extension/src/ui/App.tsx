@@ -8,6 +8,7 @@ import type { Account } from 'viem';
 interface AppProps {
   proposalId: string;
   daoId: string;
+  isDraft?: boolean;
 }
 
 interface EvidencedPoint {
@@ -72,7 +73,7 @@ interface ProposalContent {
   type: string;
 }
 
-const App: React.FC<AppProps> = ({ proposalId, daoId }) => {
+const App: React.FC<AppProps> = ({ proposalId, daoId, isDraft = false }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
@@ -212,6 +213,19 @@ const App: React.FC<AppProps> = ({ proposalId, daoId }) => {
       setError("Please connect your wallet first");
       return;
     }
+
+    // For draft proposals, check if form has content
+    if (isDraft) {
+      const titleInput = document.querySelector('input[type="text"]') as HTMLInputElement;
+      const textarea = document.querySelector('textarea') as HTMLTextAreaElement;
+      
+      console.log('[DAO Co-Pilot] Draft validation - Title:', titleInput?.value, 'Body:', textarea?.value?.substring(0, 50));
+      
+      if (!titleInput?.value?.trim() || !textarea?.value?.trim()) {
+        setError("Please fill in the proposal title and description before analyzing");
+        return;
+      }
+    }
     
     setIsLoading(true);
     setError(null);
@@ -225,10 +239,10 @@ const App: React.FC<AppProps> = ({ proposalId, daoId }) => {
         throw new Error("Please switch to Base Sepolia network in MetaMask to continue");
       }
       
-      const proposalContent = extractProposalContent();
+      const proposalContent = isDraft ? extractDraftContent() : extractProposalContent();
       setExtractedImages(proposalContent.images);
 
-      console.log("[DAO Co-Pilot] Extracted content:", {
+      console.log(`[DAO Co-Pilot] Extracted ${isDraft ? 'draft' : 'proposal'} content:`, {
         textLength: proposalContent.text.length,
         imageCount: proposalContent.images.length,
         title: proposalContent.title,
@@ -245,6 +259,7 @@ const App: React.FC<AppProps> = ({ proposalId, daoId }) => {
         proposalAuthor: proposalContent.author,
         proposalType: proposalContent.type,
         images: proposalContent.images,
+        isDraft: isDraft,
       });
 
       console.log("[DAO Co-Pilot] Sending analysis request to API...");
@@ -320,6 +335,57 @@ const App: React.FC<AppProps> = ({ proposalId, daoId }) => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const extractDraftContent = (): ProposalContent => {
+    // Extract content from Snapshot create form - use more generic selectors
+    let title = "";
+    
+    // Try multiple selectors for title input
+    const titleInput = 
+      document.querySelector('input[type="text"]') as HTMLInputElement ||
+      document.querySelector('input[placeholder*="Title"]') as HTMLInputElement ||
+      document.querySelector('input[placeholder*="title"]') as HTMLInputElement;
+    
+    if (titleInput) {
+      title = titleInput.value.trim();
+    }
+
+    // Extract proposal body from textarea
+    let proposalText = "";
+    const textarea = document.querySelector('textarea') as HTMLTextAreaElement;
+    if (textarea) {
+      proposalText = textarea.value.trim();
+    }
+
+    // Extract discussion link if any
+    const discussionInputs = document.querySelectorAll('input[type="text"]');
+    let discussionLink = "";
+    discussionInputs.forEach((input) => {
+      const htmlInput = input as HTMLInputElement;
+      const placeholder = htmlInput.placeholder?.toLowerCase() || "";
+      if (placeholder.includes('forum') || placeholder.includes('discussion')) {
+        discussionLink = htmlInput.value.trim();
+      }
+    });
+
+    const fullText = discussionLink 
+      ? `${proposalText}\n\nDiscussion: ${discussionLink}`.trim()
+      : proposalText;
+
+    console.log('[DAO Co-Pilot] Extracted draft content:', { 
+      titleLength: title.length, 
+      textLength: fullText.length 
+    });
+
+    return {
+      text: fullText.substring(0, 8000),
+      images: [],
+      title: title || "Untitled Draft",
+      topics: [],
+      author: walletAddress || "Unknown",
+      type: "Draft Proposal",
+    };
   };
 
   const extractProposalContent = (): ProposalContent => {
@@ -421,7 +487,7 @@ const App: React.FC<AppProps> = ({ proposalId, daoId }) => {
       <div className="dao-copilot-header" onClick={() => setIsExpanded(!isExpanded)}>
         <div className="dao-copilot-title">
           <span className="dao-copilot-icon">🤖</span>
-          <span className="dao-copilot-text">DAO Governance Co-Pilot</span>
+          <span className="dao-copilot-text">DORA-AI</span>
           <span className="dao-copilot-badge">AI-Powered</span>
         </div>
         <button className="dao-copilot-toggle">
@@ -432,7 +498,10 @@ const App: React.FC<AppProps> = ({ proposalId, daoId }) => {
       {isExpanded && (
         <div className="dao-copilot-content">
           <p className="dao-copilot-description">
-            Get AI-powered analysis for this {daoId.toUpperCase()} proposal
+            {isDraft 
+              ? `📝 Get AI-powered analysis for your draft ${daoId.toUpperCase()} proposal`
+              : `Get AI-powered analysis for this ${daoId.toUpperCase()} proposal`
+            }
           </p>
 
           {!walletAddress ? (
@@ -472,7 +541,7 @@ const App: React.FC<AppProps> = ({ proposalId, daoId }) => {
                   onClick={handleAnalyze}
                   disabled={isLoading}
                 >
-                  🔍 Ask AI About This Proposal
+                  {isDraft ? '📝 Analyze My Draft' : '🔍 Ask AI About This Proposal'}
                 </button>
               )}
             </>
@@ -481,7 +550,7 @@ const App: React.FC<AppProps> = ({ proposalId, daoId }) => {
           {isLoading && (
             <div className="dao-copilot-loading">
               <div className="dao-copilot-spinner"></div>
-              <p>Analyzing proposal with AI...</p>
+              <p>{isDraft ? 'Analyzing your draft with AI...' : 'Analyzing proposal with AI...'}</p>
             </div>
           )}
 

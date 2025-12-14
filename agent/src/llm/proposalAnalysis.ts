@@ -472,19 +472,92 @@ function calculateProbabilityOfPassing(
 /**
  * Analyze proposal using Local RAG (free, no API costs)
  */
+function isValidProposalContent(text: string, title?: string): boolean {
+  // Check if content is meaningful (not just random characters)
+  const cleanText = text.trim().toLowerCase();
+  const cleanTitle = title?.trim().toLowerCase() || '';
+  
+  // Must have minimum length
+  if (cleanText.length < 50) return false;
+  
+  // Check for actual words (at least 5 words of 3+ characters)
+  const words = cleanText.split(/\s+/).filter(w => w.length >= 3);
+  if (words.length < 5) return false;
+  
+  // Check if text contains common proposal keywords
+  const proposalKeywords = [
+    'propose', 'request', 'allocate', 'fund', 'budget', 'treasury',
+    'deploy', 'implement', 'upgrade', 'governance', 'vote', 'approval',
+    'community', 'dao', 'protocol', 'contract', 'grant', 'ecosystem',
+    'timeline', 'milestone', 'objective', 'goal', 'benefit', 'purpose',
+    'team', 'project', 'development', 'audit', 'security', 'integration'
+  ];
+  
+  const hasKeywords = proposalKeywords.some(keyword => 
+    cleanText.includes(keyword) || cleanTitle.includes(keyword)
+  );
+  
+  // Check for repetitive nonsense patterns
+  const hasRepetitiveChars = /(.)\1{5,}/.test(cleanText); // 6+ repeated chars
+  const isRandomKeyboard = /^[qwertyuiopasdfghjklzxcvbnm\s]+$/.test(cleanText) && 
+                           !hasKeywords;
+  
+  return hasKeywords && !hasRepetitiveChars && !isRandomKeyboard;
+}
+
 export async function callLLMForProposalAnalysis(
   daoId: string,
   proposalId: string,
-  proposalText: string
+  proposalText: string,
+  proposalTitle?: string,
+  isDraft: boolean = false
 ): Promise<ProposalAnalysis> {
   
-  console.log(`[LLM] Analyzing proposal ${proposalId} for ${daoId}`);
+  const type = isDraft ? "draft proposal" : "proposal";
+  console.log(`[LLM] Analyzing ${type} ${proposalId} for ${daoId}`);
+  if (proposalTitle) console.log(`[LLM] Title: ${proposalTitle}`);
+  
+  // Validate proposal content is meaningful
+  if (!isValidProposalContent(proposalText, proposalTitle)) {
+    console.warn(`[LLM] Invalid or insufficient proposal content detected`);
+    return {
+      summary: "Unable to analyze: Proposal content appears incomplete or invalid. Please provide a detailed proposal with clear objectives, budget, timeline, and rationale.",
+      benefits: [],
+      risks: [{
+        text: "Incomplete proposal: Missing substantive content",
+        evidence: "Proposal does not contain sufficient detail for governance analysis",
+        severity: 'High' as const
+      }],
+      recommendation: "NO",
+      confidence: 0,
+      reasoning: "Cannot recommend approval for proposals lacking clear description, objectives, or governance details. A valid proposal should include: purpose, implementation plan, budget breakdown, timeline, success metrics, and risk mitigation strategies.",
+      similarProposals: [],
+      missingFields: [
+        'Proposal objective and rationale',
+        'Implementation specification',
+        'Budget breakdown (if applicable)',
+        'Timeline and milestones',
+        'Success metrics',
+        'Risk analysis'
+      ],
+      requiredClarifications: [
+        'What is the specific purpose of this proposal?',
+        'What problem does it solve for the DAO?',
+        'What are the expected outcomes and how will they be measured?'
+      ],
+      confidenceBreakdown: {
+        rulesCoverage: 0,
+        retrievalSupport: 0,
+        baseConfidence: 0
+      }
+    };
+  }
   
   const ragAvailable = await isLocalRAGAvailable();
   
   if (!ragAvailable) {
     console.warn(`[LLM] Local RAG server not available. Using basic analysis.`);
-    return fallbackAnalysis(daoId, proposalId, proposalText);
+    return fallbackAnalysis(daoId, proposalId, proposalText, isDraft);
   }
 
   try {
@@ -495,22 +568,23 @@ export async function callLLMForProposalAnalysis(
     console.log('[LLM] Generating extractive summary...');
     const summary = await summarizeLocal(proposalText);
 
-    const analysis = analyzeWithLocalRAG(proposalText, similar, summary);
+    const analysis = analyzeWithLocalRAG(proposalText, similar, summary, isDraft);
     
-    console.log('[LLM] ✅ Local RAG analysis complete');
+    console.log(`[LLM] ✅ Local RAG ${type} analysis complete`);
     return analysis;
 
   } catch (error) {
     console.error('[LLM] Error during Local RAG analysis:', error);
     console.log('[LLM] Falling back to basic analysis');
-    return fallbackAnalysis(daoId, proposalId, proposalText);
+    return fallbackAnalysis(daoId, proposalId, proposalText, isDraft);
   }
 }
 
 function analyzeWithLocalRAG(
   proposalText: string,
   similarDocs: any[],
-  summary: string
+  summary: string,
+  isDraft: boolean = false
 ): ProposalAnalysis {
   const textLower = proposalText.toLowerCase();
   
@@ -727,7 +801,7 @@ function analyzeWithLocalRAG(
   };
 }
 
-function fallbackAnalysis(daoId: string, proposalId: string, proposalText: string): ProposalAnalysis {
+function fallbackAnalysis(daoId: string, proposalId: string, proposalText: string, isDraft: boolean = false): ProposalAnalysis {
   const textLower = proposalText.toLowerCase();
   
   const checklist = runGovernanceChecklist(proposalText);

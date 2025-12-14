@@ -12,19 +12,22 @@ const x402_express_1 = require("x402-express");
 const cors_1 = __importDefault(require("cors"));
 (0, dotenv_1.config)();
 const app = (0, express_1.default)();
-/**
- * 1) CORS – MUST be first so it runs for all responses
- */
 app.use((0, cors_1.default)({
     origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: [
         "Content-Type",
         "Authorization",
+        "X-Payment",
         "X-Payment-TxHash",
         "X-Payment-Network",
         "X-Payment-Amount",
         "X-Payment-Token",
+        "X-Payment-Signature",
+        "X-Payment-Address",
+        "X-Payment-Challenge",
+        "X-Payment-Payload",
+        "Access-Control-Expose-Headers",
     ],
     exposedHeaders: [
         "X-Payment-Required",
@@ -32,17 +35,13 @@ app.use((0, cors_1.default)({
         "X-Payment-Amount",
         "X-Payment-Network",
         "X-Payment-Token",
+        "X-Payment-Challenge",
+        "X-Payment-Payload",
+        "X-Payment-Response",
     ],
 }));
-// handle preflight globally
 app.options("*", (0, cors_1.default)());
-/**
- * 2) JSON body parser
- */
 app.use(express_1.default.json());
-/**
- * 3) X402 payment middleware – AFTER CORS, BEFORE ROUTES
- */
 const payTo = process.env.PAY_TO_ADDRESS;
 const enableX402 = process.env.ENABLE_X402 === "true" && !!payTo;
 if (enableX402) {
@@ -64,20 +63,13 @@ if (enableX402) {
     }));
 }
 else {
-    console.log("⚠️ X402 Payment Middleware DISABLED (set ENABLE_X402=true and PAY_TO_ADDRESS to enable)");
+    console.log("X402 Payment Middleware DISABLED (set ENABLE_X402=true and PAY_TO_ADDRESS to enable)");
 }
-/**
- * 4) Routes
- */
 app.use("/api/analyze-draft", analyzeDraft_1.analyzeDraftRouter);
 app.use("/api/analyze-proposal", analyzeProposal_1.analyzeProposalRouter);
 app.use("/api/health", health_1.healthRouter);
-/**
- * 5) Debug: log headers of every response (helps you verify CORS)
- */
 app.use((req, res, next) => {
     res.on("finish", () => {
-        // This will show you what headers actually went out
         console.log("Response headers:", res.getHeaders());
     });
     next();

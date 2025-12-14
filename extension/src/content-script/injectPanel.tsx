@@ -32,6 +32,15 @@ const isSnapshotPage = () => {
   return window.location.hostname === "snapshot.org";
 };
 
+// Check if we're on a create proposal page
+const isCreatePage = (): boolean => {
+  if (isSnapshotPage()) {
+    // URL format: https://snapshot.org/#/s:{space}/create/{id}
+    return window.location.hash.includes('/create/');
+  }
+  return false;
+};
+
 // Extract proposal ID from URL
 const getProposalId = (): string | null => {
   if (isUniswapGovernancePage()) {
@@ -41,9 +50,13 @@ const getProposalId = (): string | null => {
   }
   
   if (isSnapshotPage()) {
-    // URL format: https://snapshot.org/#/{space}/proposal/{id}
-    const match = window.location.hash.match(/\/proposal\/([^/]+)/);
-    return match ? match[1] : null;
+    // URL format for viewing: https://snapshot.org/#/{space}/proposal/{id}
+    const viewMatch = window.location.hash.match(/\/proposal\/([^/]+)/);
+    if (viewMatch) return viewMatch[1];
+    
+    // URL format for creating: https://snapshot.org/#/s:{space}/create/{id}
+    const createMatch = window.location.hash.match(/\/create\/([^/]+)/);
+    if (createMatch) return 'draft-' + createMatch[1];
   }
   
   return null;
@@ -144,10 +157,11 @@ function injectPanel() {
   // Mount React app
   const root = ReactDOM.createRoot(panelContainer);
   const daoId = getDaoId();
+  const isDraft = proposalId.startsWith('draft-');
   
   root.render(
     <React.StrictMode>
-      <App proposalId={proposalId} daoId={daoId} />
+      <App proposalId={proposalId} daoId={daoId} isDraft={isDraft} />
     </React.StrictMode>
   );
 
