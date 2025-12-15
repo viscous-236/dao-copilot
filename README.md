@@ -1,4 +1,4 @@
-# 🗳️ DORA-AI
+# 🗳️ DORA-AI (Chrome Extension)
 
 **AI-powered governance analysis with X402 micropayments**
 
