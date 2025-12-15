@@ -32,13 +32,13 @@ Many token holders abstain or vote heuristically due to the complexity of govern
 
 This project provides a governance-native AI co-pilot that:
 
-✅ **Summarizes proposals in seconds**
+- **Summarizes proposals in seconds**
 
-✅ **Surfaces relevant historical precedents**
+- **Surfaces relevant historical precedents**
 
-✅ **Flags missing governance safeguards and risks**
+- **Flags missing governance safeguards and risks**
 
-✅ **Produces an evidence-backed vote recommendation with confidence**
+- **Produces an evidence-backed vote recommendation with confidence**
 
 All without relying on paid APIs or opaque LLM reasoning.
 
